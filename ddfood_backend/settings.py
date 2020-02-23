@@ -7,7 +7,7 @@ environ.Env.read_env()
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,22 +48,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ddfood_backend.wsgi.application'
-
-
-
-# DATABASE_URL=postgres://ddfood:Ilikesweet90!@localhost:/ddfood
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'ddfood',
-#         'USER': 'admin',
-#         'PASSWORD': 'Ilikesweet90!',
-#         'HOST': 'localhost',
-#         'PORT': 5432,
-#     }
-# }
-
 
 DATABASES = {
     'default': env.db('DATABASE_URL')
