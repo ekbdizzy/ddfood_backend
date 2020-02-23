@@ -49,11 +49,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ddfood_backend.wsgi.application'
 
+
+
+# DATABASE_URL=postgres://ddfood:Ilikesweet90!@localhost:/ddfood
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ddfood',
+#         'USER': 'admin',
+#         'PASSWORD': 'Ilikesweet90!',
+#         'HOST': 'localhost',
+#         'PORT': 5432,
+#     }
+# }
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db('DATABASE_URL')
 }
 
 AUTH_PASSWORD_VALIDATORS = [
