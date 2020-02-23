@@ -1,0 +1,6 @@
+.idea/
+venv/
+fabfile.py
+db.sqlite3
+ddfood_backend/.env
+*/__pycache__/
