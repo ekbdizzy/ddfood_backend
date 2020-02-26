@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Product, TradeMark, Category, CategoryOfProduct, ImageOfProduct
+from localization.models import ProductInStock
 
 
 class ProductCategoryInLine(admin.TabularInline):
@@ -10,6 +11,11 @@ class ProductCategoryInLine(admin.TabularInline):
 
 class ImagesInProductInLine(admin.StackedInline):
     model = ImageOfProduct
+    extra = 1
+
+
+class ProductInStockInLine(admin.StackedInline):
+    model = ProductInStock
     extra = 1
 
 
@@ -41,8 +47,9 @@ class ProductAdmin(admin.ModelAdmin):
         model = Product
         ordering = ('name',)
 
-    inlines = [ProductCategoryInLine, ImagesInProductInLine]
+    inlines = [ProductCategoryInLine, ImagesInProductInLine, ProductInStockInLine]
 
 # class OrderItemInLine(admin.TabularInline):
 #     model = OrderItem
+#     raw_id_fields = ['product']
 #     raw_id_fields = ['product']

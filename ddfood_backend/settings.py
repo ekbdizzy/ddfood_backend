@@ -22,7 +22,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'user',
+    'localization',
     'catalog',
+    'order',
     'promo_code',
 ]
 
