@@ -7,3 +7,4 @@ ddfood_backend/.env
 Dockerfile
 fabric_templates/
 */migrations/
+media/
