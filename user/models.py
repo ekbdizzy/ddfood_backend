@@ -6,6 +6,16 @@ from promo_code.models import PromoCode
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """Default User model based on AbstractBaseUser. USERNAME_FIELD: email """
+
+    objects = UserManager()
+    USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = ('phone',)
+
+    def save(self, *args, **kwargs):
+        super(User, self).save(*args, **kwargs)
+        return self
+
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
     phone = models.CharField(unique=True, max_length=15, verbose_name='Телефон')
     full_name = models.CharField(max_length=100, blank=True, verbose_name='Имя, фамилия')
@@ -15,18 +25,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False, verbose_name="Персонал")
     is_superuser = models.BooleanField(default=False, verbose_name="Aдминистратор (полный доступ к управлению сайтом)")
 
-    objects = UserManager()
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('phone',)
-
-    def __str__(self):
-        return str(self.email)
-
     class Meta:
         verbose_name = 'Покупатель'
         verbose_name_plural = 'Покупатели'
         ordering = ('email',)
+
+    def __str__(self):
+        return str(self.email)
 
 
 class Partner(models.Model):
@@ -45,12 +50,12 @@ class SalesManager(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT, related_name='sales_manager')
     partners = models.ForeignKey(Partner, on_delete=models.PROTECT, related_name='sales_manager')
 
-    def __str__(self):
-        return str(f'{self.user.full_name}: {self.user.email}')
-
     class Meta:
         verbose_name = 'Менеджер по продажам'
         verbose_name_plural = 'Менеджеры по продажам'
+
+    def __str__(self):
+        return str(f'{self.user.full_name}: {self.user.email}')
 
 
 class InvitedUser(models.Model):
