@@ -6,3 +6,4 @@ ddfood_backend/.env
 */__pycache__/
 Dockerfile
 fabric_templates/
+*/migrations/
