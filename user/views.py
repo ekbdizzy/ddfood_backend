@@ -5,7 +5,7 @@ from django.contrib.auth import user_logged_in
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 
 import jwt
@@ -29,10 +29,11 @@ class CreateUserAPIView(APIView):
         return Response(user_serializer.data, status=status.HTTP_201_CREATED)
 
 
-# TODO ObtainJSONWebToken
 @api_view(['POST'])
 @permission_classes([AllowAny, ])
 def authenticate_user(request):
+    """ Based on ObtainJSONWebToken"""
+
     email = request.data.get('email', '')
     password = request.data.get('password', '')
     phone = request.data.get('phone', '')
@@ -59,3 +60,31 @@ def authenticate_user(request):
     else:
         error = {'error': 'Неверный логин или пароль'}
         return Response(error, status=status.HTTP_403_FORBIDDEN)
+
+
+class UserGetUpdateAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
+
+    def get(self, request):
+        serializer = self.serializer_class(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        serializer = UserSerializer(
+            instance=request.user,
+            data=request.data,
+            partial=True
+        )
+
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        serializer.update(request.user, data)
+
+        new_password = request.data.get('password', {})
+
+        if new_password:
+            request.user.set_password(new_password)
+            request.user.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,3 +1,46 @@
-from django.shortcuts import render
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from django.shortcuts import get_object_or_404
+from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer
 
-# Create your views here.
+
+class ProductsListAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        data = serializer.data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class CategoriesListAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        categories = Category.objects.filter(is_active=True)
+        serializer = CategorySerializer(categories, many=True)
+        data = serializer.data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class ProductsOfCategoryAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, category_id):
+        products = Product.objects.filter(categories=category_id)
+        serializer = ProductSerializer(products, many=True)
+        data = serializer.data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class ProductDetailApiView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
