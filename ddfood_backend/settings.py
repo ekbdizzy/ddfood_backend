@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'catalog',
     'order',
     'promo_code',
+    'shop',
 ]
 
 JWT_AUTH = {
