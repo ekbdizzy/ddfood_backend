@@ -8,10 +8,20 @@ environ.Env.read_env()
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
+
 ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'user.User'
 DEFAULT_CITY_ID = 'Spb'
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+
+# CORS_ORIGIN_ALLOW_ALL = False
+#
+# CORS_ORIGIN_WHITELIST = (
+#     'http//:localhost:8000',
+# )
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -22,7 +32,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
+    'corsheaders',
     'rest_framework',
+
     'user',
     'localization',
     'catalog',
@@ -45,6 +57,11 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    # CORS
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # DEFAULT DJANGO
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
