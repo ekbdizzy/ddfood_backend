@@ -17,6 +17,16 @@ class ProductsListAPIView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
+class ProductsInCartAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        products = Product.objects.filter(id__in=request.data['products_ids'])
+        serializer = ProductSerializer(products, many=True)
+        data = serializer.data
+        return Response(data, status=status.HTTP_200_OK)
+
+
 class CategoriesListAPIView(APIView):
     permission_classes = (AllowAny,)
 
