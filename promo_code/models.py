@@ -10,7 +10,7 @@ class PromoCode(models.Model):
         validators=[MinValueValidator(0), MaxValueValidator(100)],
         verbose_name="Процент скидки"
     )
-    active = models.BooleanField(default=True, verbose_name="Aктивен")
+    is_active = models.BooleanField(default=True, verbose_name="Aктивен")
 
     def __str__(self):
         return str(self.code)
