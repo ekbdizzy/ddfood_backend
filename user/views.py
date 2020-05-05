@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.contrib.auth import user_logged_in
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -37,10 +36,12 @@ def authenticate_user(request):
     email = request.data.get('email', '')
     password = request.data.get('password', '')
     phone = request.data.get('phone', '')
+
     if email:
         user = get_object_or_404(User, email=email)
+
     else:
-        user = get_object_or_404(User, phone=phone)
+        return Response({"error": "Пользователь не существует"}, status=status.HTTP_400_BAD_REQUEST)
 
     if user and user.check_password(password):
         try:

@@ -12,7 +12,6 @@ class PromoCodeAPIView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        print('Hello!')
         code = request.data['code']
         promo_code = PromoCode.objects.filter(code=code,
                                               is_active=True,
@@ -23,4 +22,4 @@ class PromoCodeAPIView(APIView):
             serializer = PromoCodeSerializer(promo_code[0])
             data = serializer.data
             return Response(data, status=status.HTTP_200_OK)
-        return Response({'error': 'Промокод не действителен'})
+        return Response({'error': 'Промокод не действителен'}, status=status.HTTP_400_BAD_REQUEST)

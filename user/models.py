@@ -10,11 +10,25 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
     USERNAME_FIELD = 'email'
+
     # REQUIRED_FIELDS = ('phone',)
 
     def save(self, *args, **kwargs):
         super(User, self).save(*args, **kwargs)
         return self
+
+    @staticmethod
+    def create_user_with_default_password(full_name, email, phone):
+        new_user = User.objects.create(
+            email=email,
+            full_name=full_name,
+            phone=phone,
+        )
+        gen_password = phone[:-5:-1]
+        print(gen_password)
+        new_user.set_password(gen_password)
+        new_user.save()
+        return new_user
 
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
     phone = models.CharField(unique=True, max_length=15, verbose_name='Телефон')

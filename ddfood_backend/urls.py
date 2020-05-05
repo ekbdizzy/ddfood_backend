@@ -10,6 +10,7 @@ urlpatterns = [
     path('city/', include('localization.urls', namespace='city')),
     path('shop/', include('shop.urls', namespace='shop')),
     path('promo_code/', include('promo_code.urls', namespace='promo_code')),
+    path('order/', include('order.urls', namespace='orders'))
 ]
 
 if settings.DEBUG is True:
