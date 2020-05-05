@@ -54,3 +54,21 @@ class ProductDetailApiView(APIView):
         product = get_object_or_404(Product, id=product_id)
         serializer = ProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SearchProductsAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        search_query = request.GET.get('search')
+        print(search_query)
+        list_of_products = Product.objects.filter(name__contains=search_query)
+        if len(list_of_products) > 10:
+            list_of_products = list_of_products[:10]
+
+        serializer = ProductSerializer(list_of_products, many=True)
+
+        if list_of_products:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({'error': 'Ничего не найдено'}, status=status.HTTP_404_NOT_FOUND)
