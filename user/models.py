@@ -11,8 +11,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
     USERNAME_FIELD = 'email'
 
-    # REQUIRED_FIELDS = ('phone',)
-
     def save(self, *args, **kwargs):
         super(User, self).save(*args, **kwargs)
         return self
@@ -82,3 +80,18 @@ class InvitedUser(models.Model):
 
     def __str__(self):
         return str(f'{self.user.full_name}: {self.user.email}')
+
+
+class PasswordRecovery(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_recovery')
+    link = models.CharField(max_length=50, blank=True, default='', unique=True)
+    date_created = models.DateField(auto_now_add=True)
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "{} : {}".format(self.user_id, self.link)
+
+    class Meta:
+        ordering = ('date_created',)
+        verbose_name = 'Ссылка для восстановления пароля'
+        verbose_name_plural = 'Ссылки для восстановления пароля'

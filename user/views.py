@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.contrib.auth import user_logged_in
@@ -19,13 +20,30 @@ class CreateUserAPIView(APIView):
 
     def post(self, request):
         user = request.data
-        serializer = UserSerializer(data=user)
-        serializer.is_valid(raise_exception=True)
-        data = serializer.validated_data
-        new_user = serializer.create(data)
-        user_serializer = UserSerializer(new_user)
 
-        return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+        if not request.data.get('email', ''):
+            return Response({'error': 'Укажите электронную почту'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if User.objects.filter(email=request.data.get('email', '')):
+            return Response({'error': 'Пользователь с такой почтой уже существует'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if len(request.data.get('phone', '')) < 15:
+            return Response({'error': 'Введите номер телефона в формате +7 XXX-XXX-XXXX'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if User.objects.filter(phone=request.data.get('phone', '')):
+            return Response({'error': 'Пользователь с таким телефоном уже существует'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = UserSerializer(data=user)
+        if serializer.is_valid(raise_exception=True):
+            data = serializer.validated_data
+            new_user = serializer.create(data)
+            user_serializer = UserSerializer(new_user)
+
+            return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+        return Response({'error': 'error'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -37,11 +55,9 @@ def authenticate_user(request):
     password = request.data.get('password', '')
     phone = request.data.get('phone', '')
 
-    if email:
-        user = get_object_or_404(User, email=email)
-
-    else:
-        return Response({"error": "Пользователь не существует"}, status=status.HTTP_400_BAD_REQUEST)
+    user = User.objects.filter(Q(email=email) | Q(phone=phone))
+    if user:
+        user = user[0]
 
     if user and user.check_password(password):
         try:

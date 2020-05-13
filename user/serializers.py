@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, PasswordRecovery
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,9 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-# {
-# "email": "ekbdizzy@mail.ru",
-# "full_name": "Aleksey",
-# "phone": "9-999-555-44-44",
-# "password": "1"
-# }
+
+class PasswordRecoverySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PasswordRecovery
+        fields = ('user', 'link')

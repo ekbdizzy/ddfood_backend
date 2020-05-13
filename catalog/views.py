@@ -62,7 +62,7 @@ class SearchProductsAPIView(APIView):
     def get(self, request):
         search_query = request.GET.get('search')
         print(search_query)
-        list_of_products = Product.objects.filter(name__contains=search_query)
+        list_of_products = Product.objects.filter(name__icontains=search_query)
         if len(list_of_products) > 10:
             list_of_products = list_of_products[:10]
 
